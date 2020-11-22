@@ -1,0 +1,10 @@
+name: 'dummy'
+mqttServer: 'mqtt-broker-ip'
+mqttPort: 1883
+mqttUser: 'user'
+mqttPass: 'password'
+influxServer: 'influx-server-ip'
+influxPort: 8086
+influxUser: 'user'
+influxPass: 'password'
+influxDB: 'temperature'
