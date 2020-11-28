@@ -21,6 +21,7 @@ conf={}
 
 mqtt_client= None
 mqtt_state_topic= 'undefined'
+mqtt_avail_topic= 'undefined'
 
 influx= None
 
@@ -74,33 +75,66 @@ def parse_config():
 
 def mqtt_announce():
 
-  global mqtt_client, mqtt_state_topic
+  global mqtt_client, mqtt_state_topic, mqtt_avail_topic
 
   print( "mqtt_announce" )
 
-  mqtt_state_topic= 'homeassistant/sensor/dummy_bme280_' + HOSTNAME + '/state'
+  mqtt_state_topic= 'homeassistant/sensor/dummy_bme280_{}/state'.format(HOSTNAME)
+  mqtt_avail_topic= 'homeassistant/sensor/dummy_bme280_{}/avail'.format(HOSTNAME)
 
   # temperature
-  topic= "homeassistant/sensor/" + conf['name'] + "/temperature/config"
-  unique_id= "temperature_" + conf['name']
-  payload= '{ "device_class":  "temperature", "name": "Temperature ' + conf['name'] + '", "unique_id": "' + unique_id + '", "state_topic": "' + mqtt_state_topic + '", "unit_of_measurement": "°C", "value_template": "{{ value_json.temperature }}" }'
+  topic= 'homeassistant/sensor/{}/temperature/config'.format(conf['name'])
+  strings= ['{']
+  strings.extend(['"device_class":  "temperature"',', '])
+  strings.extend(['"name": "Temperature {}"'.format(conf['name']),', '])
+  strings.extend(['"unique_id": "temperature_{}"'.format(conf['name']),', '])
+  strings.extend(['"state_topic": "{}"'.format(mqtt_state_topic),', '])
+  strings.extend(['"availability_topic": "{}"'.format(mqtt_avail_topic),', '])
+  strings.extend(['"unit_of_measurement": "°C"',', '])
+  strings.extend(['"value_template": "{{ value_json.temperature }}"',', '])
+  strings.extend(['"expire_after": {}'.format(370)])
+  strings.extend(['}'])
+  payload= ''.join(strings)
+
   print( "send " + topic + " : " + payload )
   mqtt_client.publish( topic, payload )
 
   # pressure
-  topic= "homeassistant/sensor/" + conf['name'] + "/pressure/config"
-  unique_id= "pressure_" + conf['name']
-  payload= '{ "device_class": "pressure", "name": "Pressure ' + conf['name'] + '", "unique_id": "' + unique_id + '", "state_topic": "' + mqtt_state_topic + '", "unit_of_measurement": "hPa", "value_template": "{{ value_json.pressure }}" }'
+  topic= 'homeassistant/sensor/{}/pressure/config'.format(conf['name'])
+  strings= ['{']
+  strings.extend(['"device_class":  "pressure"',', '])
+  strings.extend(['"name": "Pressure {}"'.format(conf['name']),', '])
+  strings.extend(['"unique_id": "pressure_{}"'.format(conf['name']),', '])
+  strings.extend(['"state_topic": "{}"'.format(mqtt_state_topic),', '])
+  strings.extend(['"availability_topic": "{}"'.format(mqtt_avail_topic),', '])
+  strings.extend(['"unit_of_measurement": "hPa"',', '])
+  strings.extend(['"value_template": "{{ value_json.pressure }}"',', '])
+  strings.extend(['"expire_after": {}'.format(370)])
+  strings.extend(['}'])
+  payload= ''.join(strings)
+
   print( "send " + topic + " : " + payload )
   mqtt_client.publish( topic, payload )
 
   # humidity
-  topic= "homeassistant/sensor/" + conf['name'] + "/humidity/config"
-  unique_id= "humidity_" + conf['name']
-  payload= '{ "device_class": "humidity", "name": "Humidity ' + conf['name'] + '", "unique_id": "' + unique_id + '", "state_topic": "' + mqtt_state_topic + '", "unit_of_measurement": "%", "value_template": "{{ value_json.humidity }}" }'
+  topic= 'homeassistant/sensor/{}/humidity/config'.format(conf['name'])
+  strings= ['{']
+  strings.extend(['"device_class":  "humidity"',', '])
+  strings.extend(['"name": "Humidity {}"'.format(conf['name']),', '])
+  strings.extend(['"unique_id": "humidity_{}"'.format(conf['name']),', '])
+  strings.extend(['"state_topic": "{}"'.format(mqtt_state_topic),', '])
+  strings.extend(['"availability_topic": "{}"'.format(mqtt_avail_topic),', '])
+  strings.extend(['"unit_of_measurement": "%"',', '])
+  strings.extend(['"value_template": "{{ value_json.humidity }}"',', '])
+  strings.extend(['"expire_after": {}'.format(370)])
+  strings.extend(['}'])
+  payload= ''.join(strings)
+
   print( "send " + topic + " : " + payload )
   mqtt_client.publish( topic, payload )
 
+  print( "publish ", mqtt_avail_topic, "online" )
+  mqtt_client.publish( mqtt_avail_topic, "online" )
 
 ## callbacks for mqtt
 
@@ -170,10 +204,12 @@ def init_mqtt():
 
 def finalize_mqtt():
 
-  global mqtt_client
+  global mqtt_client, mqtt_avail_topic
 
   print( "stopping MQTT" )
 
+  print( "publish ", mqtt_avail_topic, "offline" )
+  mqtt_client.publish( mqtt_avail_topic, "offline" )
 
   mqtt_client.disconnect()
 
