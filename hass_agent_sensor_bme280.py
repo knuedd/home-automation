@@ -208,26 +208,26 @@ def mqtt_announce():
 
   print( "mqtt_announce" )
 
-  mqtt_state_topic= 'homeassistant/sensor/dummy_bme280_' + HOSTNAME + '/state'
+  mqtt_state_topic= 'homeassistant/sensor/bme280_' + HOSTNAME + '/state'
 
   # temperature
   topic= "homeassistant/sensor/" + conf['name'] + "/temperature/config"
   unique_id= "temperature_" + conf['name']
-  payload= '{ "device_class":  "temperature", "name": "Temperature ' + conf['name'] + '", "unique_id": "' + unique_id + '", "state_topic": "' + mqtt_state_topic + '", "unit_of_measurement": "°C", "value_template": "{{ value_json.temperature }}" }'
+  payload= '{ "device_class":  "temperature", "name": "Temperature ' + conf['name'] + '", "unique_id": "' + unique_id + '", "state_topic": "' + mqtt_state_topic + '", "unit_of_measurement": "°C", "value_template": "{{ value_json.temperature }}", "expire_after": 370 }'
   print( "send " + topic + " : " + payload )
   mqtt_client.publish( topic, payload )
 
   # pressure
   topic= "homeassistant/sensor/" + conf['name'] + "/pressure/config"
   unique_id= "pressure_" + conf['name']
-  payload= '{ "device_class": "pressure", "name": "Pressure ' + conf['name'] + '", "unique_id": "' + unique_id + '", "state_topic": "' + mqtt_state_topic + '", "unit_of_measurement": "hPa", "value_template": "{{ value_json.pressure }}" }'
+  payload= '{ "device_class": "pressure", "name": "Pressure ' + conf['name'] + '", "unique_id": "' + unique_id + '", "state_topic": "' + mqtt_state_topic + '", "unit_of_measurement": "hPa", "value_template": "{{ value_json.pressure }}", "expire_after": 370 }'
   print( "send " + topic + " : " + payload )
   mqtt_client.publish( topic, payload )
 
   # humidity
   topic= "homeassistant/sensor/" + conf['name'] + "/humidity/config"
   unique_id= "humidity_" + conf['name']
-  payload= '{ "device_class": "humidity", "name": "Humidity ' + conf['name'] + '", "unique_id": "' + unique_id + '", "state_topic": "' + mqtt_state_topic + '", "unit_of_measurement": "%", "value_template": "{{ value_json.humidity }}" }'
+  payload= '{ "device_class": "humidity", "name": "Humidity ' + conf['name'] + '", "unique_id": "' + unique_id + '", "state_topic": "' + mqtt_state_topic + '", "unit_of_measurement": "%", "value_template": "{{ value_json.humidity }}", "expire_after": 370 }'
   print( "send " + topic + " : " + payload )
   mqtt_client.publish( topic, payload )
 
@@ -302,16 +302,19 @@ def finalize_mqtt():
 
   global mqtt_client
 
+  print( "stopping MQTT" )
+
+
   mqtt_client.disconnect()
 
   mqtt_client.loop_stop()
 
-  print( "mqtt stopped" )
+  print( "MQTT stopped" )
 
 
 def send_mqtt( temperature, pressure, humidity ):
 
-  global conf, mqtt_client
+  global conf, mqtt_client, mqtt_state_topic
 
   payload= '{ "temperature": %f, "pressure": %f, "humidity": %f }' % (temperature,pressure,humidity)
   #print( "mqtt publish ", mqtt_state_topic, " : ", payload )
@@ -393,7 +396,7 @@ def main():
   except:
     print( "unexpected error" )
 
-    finalize_mqtt()
+  finalize_mqtt()
 
 
 if __name__=="__main__":
