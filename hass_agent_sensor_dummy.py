@@ -84,21 +84,21 @@ def mqtt_announce():
   topic= "homeassistant/sensor/" + conf['name'] + "/temperature/config"
   unique_id= "temperature_" + conf['name']
   payload= '{ "device_class":  "temperature", "name": "Temperature ' + conf['name'] + '", "unique_id": "' + unique_id + '", "state_topic": "' + mqtt_state_topic + '", "unit_of_measurement": "°C", "value_template": "{{ value_json.temperature }}" }'
-  #print( "send " + topic + " : " + payload )
+  print( "send " + topic + " : " + payload )
   mqtt_client.publish( topic, payload )
 
   # pressure
   topic= "homeassistant/sensor/" + conf['name'] + "/pressure/config"
   unique_id= "pressure_" + conf['name']
   payload= '{ "device_class": "pressure", "name": "Pressure ' + conf['name'] + '", "unique_id": "' + unique_id + '", "state_topic": "' + mqtt_state_topic + '", "unit_of_measurement": "hPa", "value_template": "{{ value_json.pressure }}" }'
-  #print( "send " + topic + " : " + payload )
+  print( "send " + topic + " : " + payload )
   mqtt_client.publish( topic, payload )
 
   # humidity
   topic= "homeassistant/sensor/" + conf['name'] + "/humidity/config"
   unique_id= "humidity_" + conf['name']
   payload= '{ "device_class": "humidity", "name": "Humidity ' + conf['name'] + '", "unique_id": "' + unique_id + '", "state_topic": "' + mqtt_state_topic + '", "unit_of_measurement": "%", "value_template": "{{ value_json.humidity }}" }'
-  #print( "send " + topic + " : " + payload )
+  print( "send " + topic + " : " + payload )
   mqtt_client.publish( topic, payload )
 
 
