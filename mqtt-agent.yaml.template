@@ -1,4 +1,5 @@
-name: 'dummy'
+name: 'dummy' # optional but suggestet
+location: 'draussen' # optional
 mqttServer: 'mqtt-broker-ip'
 mqttPort: 1883
 mqttUser: 'user'
