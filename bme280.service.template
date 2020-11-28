@@ -1,0 +1,24 @@
+# - adjust paths and user, remove ".template" suffix from file name
+# - copy me to /etc/systemd/system/
+# install service file: %> sudo systemctl daemon-reload
+# start one with %> sudo systemctl start bme280.service
+# enable on reboot with %> sudo systemctl enable bme280.service
+# watch what it does with %> journalctl -u bme280.service -f
+
+[Unit]
+Description=BME280 sensor to Home Assistant MQTT and to InfluxDB
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+WorkingDirectory=<dir>
+Type=simple
+Restart=always
+RestartSec=100
+User=<user>
+ExecStart=/usr/bin/env python3 hass_agent_sensor_bme280.py
+
+
+[Install]
+WantedBy=multi-user.target
+
