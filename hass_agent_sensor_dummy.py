@@ -172,11 +172,14 @@ def finalize_mqtt():
 
   global mqtt_client
 
+  print( "stopping MQTT" )
+
+
   mqtt_client.disconnect()
 
   mqtt_client.loop_stop()
 
-  print( "mqtt stopped" )
+  print( "MQTT stopped" )
 
 
 def send_mqtt( temperature, pressure, humidity ):
@@ -233,7 +236,7 @@ def main():
 
   parse_config()
 
-  if 'influxServer' in conf:
+  if 'mqttServer' in conf:
     init_mqtt()
 
   if 'influxServer' in conf:
@@ -260,6 +263,7 @@ def main():
   except:
     print( "unexpected error" )
 
+  if 'mqttServer' in conf:
     finalize_mqtt()
 
 

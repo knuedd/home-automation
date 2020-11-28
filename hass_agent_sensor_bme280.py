@@ -366,7 +366,7 @@ def main():
 
   parse_config()
 
-  if 'influxServer' in conf:
+  if 'mqttServer' in conf:
     init_mqtt()
 
   if 'influxServer' in conf:
@@ -396,7 +396,8 @@ def main():
   except:
     print( "unexpected error" )
 
-  finalize_mqtt()
+  if 'mqttServer' in conf:
+    finalize_mqtt()
 
 
 if __name__=="__main__":
