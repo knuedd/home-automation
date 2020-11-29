@@ -208,8 +208,8 @@ def mqtt_announce():
 
   print( "mqtt_announce" )
 
-  mqtt_state_topic= 'homeassistant/sensor/dummy_bme280_{}/state'.format(HOSTNAME)
-  mqtt_avail_topic= 'homeassistant/sensor/dummy_bme280_{}/avail'.format(HOSTNAME)
+  mqtt_state_topic= 'homeassistant/sensor/bme280_{}/state'.format(HOSTNAME)
+  mqtt_avail_topic= 'homeassistant/sensor/bme280_{}/avail'.format(HOSTNAME)
 
   # temperature
   topic= 'homeassistant/sensor/{}/temperature/config'.format(conf['name'])
@@ -225,7 +225,7 @@ def mqtt_announce():
   strings.extend(['}'])
   payload= ''.join(strings)
 
-  print( "send " + topic + " : " + payload )
+  print( "publish " + topic + " : " + payload )
   mqtt_client.publish( topic, payload )
 
   # pressure
@@ -242,7 +242,7 @@ def mqtt_announce():
   strings.extend(['}'])
   payload= ''.join(strings)
 
-  print( "send " + topic + " : " + payload )
+  print( "publish " + topic + " : " + payload )
   mqtt_client.publish( topic, payload )
 
   # humidity
@@ -365,9 +365,9 @@ def init_influx():
   influx = influxdb.InfluxDBClient( host= conf['influxServer'], port= conf['influxPort'], username= conf['influxUser'], password= conf['influxPass'],  database=conf['influxDB'] )
 
   #influx.create_database('temperature')
-  list= influx.get_list_database()
-  print( "list of influx databases")
-  print( list )
+  #list= influx.get_list_database()
+  #print( "list of influx databases")
+  #print( list )
 
 
 def send_influx( temperature, pressure, humidity ):
