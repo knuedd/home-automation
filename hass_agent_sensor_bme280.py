@@ -259,7 +259,7 @@ def mqtt_announce():
   strings.extend(['}'])
   payload= ''.join(strings)
 
-  print( "send " + topic + " : " + payload )
+  print( "publish " + topic + " : " + payload )
   mqtt_client.publish( topic, payload )
 
   print( "publish ", mqtt_avail_topic, "online" )
