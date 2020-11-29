@@ -199,7 +199,7 @@ def parse_config():
   if 'influxServer' in conf:
     print( "InfluxDB  enabled" )
 
-  print( "conf: ", conf )
+  #print( "conf: ", conf )
 
 
 def mqtt_announce():
