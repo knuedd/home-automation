@@ -4,7 +4,7 @@ This is my public version of the home automation scripts to work together with h
 
 ## hass_agent_sensor_bme280.py
 
-Python3 agent that regularly collects temperature, pressure, and humidity measuremnts fomr a BME280 sensor and sends it out. It will send it to:
+Python3 agent that regularly collects temperature, pressure, and humidity measuremnts fomr a BME280 (https://www.reichelt.de/entwicklerboards-temperatur-und-drucksensor-bmp280-debo-bmp280-p266034.html?&nbc=1) sensor and sends it out. It will send it to:
 * the Home Assistant instance via MQTT device discovery and updates
 * optionally to an InfluxDB via the python3 package `influxdb`
 
