@@ -136,6 +136,7 @@ def mqtt_announce():
   print( "publish ", mqtt_avail_topic, "online" )
   mqtt_client.publish( mqtt_avail_topic, "online" )
 
+
 ## callbacks for mqtt
 
 # The callback for when the client receives a CONNACK response from the server.
@@ -220,7 +221,7 @@ def finalize_mqtt():
 
 def send_mqtt( temperature, pressure, humidity ):
 
-  global conf, mqtt_client
+  global conf, mqtt_client, mqtt_state_topic
 
   payload= '{ "temperature": %f, "pressure": %f, "humidity": %f }' % (temperature,pressure,humidity)
   #print( "mqtt publish ", mqtt_state_topic, " : ", payload )
