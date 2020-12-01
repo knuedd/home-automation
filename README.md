@@ -12,6 +12,13 @@ Python3 agent that regularly collects temperature, pressure, and humidity measur
 
 Does the same thing but with dummy sensors so that you don't need the sensor to play with this.
 
+## Example dashboard
+
+![Example dashboard screenshot](https://raw.githubusercontent.com/knuedd/home-automation/main/images/example_dashboard_screenshot.png)
+
+This is how the result may look like. The three gauge charts in the top present one BME280 sensor connected to a remote raspi and transmitted via the MQTT agent from this repo. The three sets of line charts below are from the one sensor shown above and three more BME280 sensors connected to three more raspis.
+
+To the left there is a weather forecast and in the top left there is a remote garage door control and status panel. The home assistant MQTT agent for this one will follow here.
 
 
 ## PS
