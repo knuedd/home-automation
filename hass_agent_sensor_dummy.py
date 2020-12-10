@@ -38,6 +38,10 @@ def do_measurement():
   pressure= 900.0 + 100.0 * math.sin( 2.0*math.pi*(seconds % 1800)/1800 ) # one sine per half hour
   humidity= 0.8 + .2 * math.sin ( 2.0*math.pi*(seconds % 2400)/2400 ) # 1.5 sine per hour
 
+  temperature= round( temperature, 1 )
+  pressure= round( pressure, 1)
+  humidity= round( humidity, 3 )
+
   return temperature,pressure,humidity
 
 
@@ -285,7 +289,7 @@ def main():
     while(True):
 
       temperature, pressure, humidity = do_measurement()
-      print( "Temperature : ", temperature, "C ", "Pressure : ", pressure, "hPa ", "Humidity : ", humidity, "%" )
+      print( "Temperature : ", temperature, "C ", "Pressure : ", pressure, "hPa ", "Humidity : ", humidity*100.0, "%" )
 
       if 'mqttServer' in conf:
         send_mqtt( temperature, pressure, humidity )

@@ -167,6 +167,11 @@ def readBME280All(addr=DEVICE):
 def do_measurement():
 
   temperature,pressure,humidity= readBME280All()
+  
+  temperature= round( temperature, 1 )
+  pressure= round( pressure, 1)
+  humidity= round( humidity, 3 )
+
   return temperature,pressure,humidity
 
 
