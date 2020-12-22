@@ -20,6 +20,15 @@ import datetime
 import paho.mqtt.client as mqtt
 import yaml
 
+import argparse
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument( '-d', '--debug', help='enable debug info', action='store_true' )
+args = parser.parse_args()
+
+if args.debug:
+  print( "debugging mode" )
 
 HOSTNAME= socket.gethostname()
 
@@ -64,6 +73,8 @@ def readBME280ID(addr=DEVICE):
 
 def readBME280All(addr=DEVICE):
 
+  if args.debug: print( "  enter readBME280All()" )
+
   # Register Addresses
   REG_DATA = 0xF7
   REG_CONTROL = 0xF4
@@ -78,6 +89,8 @@ def readBME280All(addr=DEVICE):
   OVERSAMPLE_PRES = 2
   MODE = 1
 
+  if args.debug: print( "    bus.write_byte_data x2" )
+
   # Oversample setting for humidity register - page 26
   OVERSAMPLE_HUM = 2
   bus.write_byte_data(addr, REG_CONTROL_HUM, OVERSAMPLE_HUM)
@@ -85,11 +98,15 @@ def readBME280All(addr=DEVICE):
   control = OVERSAMPLE_TEMP<<5 | OVERSAMPLE_PRES<<2 | MODE
   bus.write_byte_data(addr, REG_CONTROL, control)
 
+  if args.debug: print( "    bus.read_i2c_block_data x3" )
+
   # Read blocks of calibration data from EEPROM
   # See Page 22 data sheet
   cal1 = bus.read_i2c_block_data(addr, 0x88, 24)
   cal2 = bus.read_i2c_block_data(addr, 0xA1, 1)
   cal3 = bus.read_i2c_block_data(addr, 0xE1, 7)
+
+  if args.debug: print( "    convert" )
 
   # Convert byte data to word values
   dig_T1 = getUShort(cal1, 0)
@@ -161,16 +178,22 @@ def readBME280All(addr=DEVICE):
   elif humidity < 0:
     humidity = 0
 
+  if args.debug: print( "  leave readBME280All()" )
+
   return temperature/100.0,pressure/100.0,humidity*1.0
 
 
 def do_measurement():
+
+  if args.debug: print( "  enter do_measurement()" )
 
   temperature,pressure,humidity= readBME280All()
   
   temperature= round( temperature, 1 )
   pressure= round( pressure, 1)
   humidity= round( humidity, 3 )
+
+  if args.debug: print( "  leave do_measurement()" )
 
   return temperature,pressure,humidity
 
@@ -417,6 +440,9 @@ def main():
   print( "Chip ID     :", chip_id )
   print( "Version     :", chip_version )
 
+  # allow MQTT announcements etc. before smbus errors or similar can hit
+  time.sleep(2.0)
+
   try:
   
     while(True):
@@ -434,8 +460,14 @@ def main():
 
   except KeyboardInterrupt:
     print( "Keyboard interrupt" )
-  except:
-    print( "unexpected error" )
+  except Exception as inst:
+    print( "unexpected error:" )
+    print(type(inst))
+    print(inst.args)
+    print(inst)
+
+  # allow MQTT messages in case of errors
+  time.sleep(2.0)
 
   if 'mqttServer' in conf:
     finalize_mqtt()
