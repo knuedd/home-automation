@@ -24,8 +24,10 @@ import argparse
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument( '-d', '--debug', help='enable debug info', action='store_true' )
+parser.add_argument( '-d', '--debug', help='Enable debug info', action='store_true' )
+parser.add_argument( '-t', '--test', help='Test, do not send out values to receivers', action='store_true' )
 args = parser.parse_args()
+
 
 if args.debug:
   print( "debugging mode" )
@@ -219,7 +221,6 @@ def parse_config():
 
     # use hostname instead
     conf['location']= HOSTNAME
-
 
   if 'mqttServer' in conf:
     print( "Home Assistant MQTT enabled" )
@@ -429,6 +430,10 @@ def main():
   global conf, mqtt_client, mqtt_state_topic
 
   parse_config()
+
+  if args.test:
+    conf.pop( 'mqttServer', None )
+    conf.pop( 'influxServer', None )
 
   if 'mqttServer' in conf:
     init_mqtt()
